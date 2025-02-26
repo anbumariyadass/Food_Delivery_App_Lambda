@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/delivery")
 public class DeliveryController {
-    @GetMapping("/connect/{ordermsg}")
-    public ResponseEntity<String> checkConnection(@PathVariable String ordermsg) {
-        return ResponseEntity.ok("Message returned from delivery service. "+ordermsg);
+    @PostMapping("/processorder")
+    public ResponseEntity<String> checkConnection(@RequestBody String orderMessage) {
+        return ResponseEntity.ok("Message returned from delivery service. " + orderMessage);
     }
 }
