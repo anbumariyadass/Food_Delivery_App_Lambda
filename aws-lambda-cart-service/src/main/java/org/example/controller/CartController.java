@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.dto.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,39 +15,53 @@ import org.springframework.web.bind.annotation.RestController;
 import org.example.entity.Cart;
 import org.example.service.cartService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/cart")
 public class CartController {
 	
 	@GetMapping
-	public ResponseEntity<String> welcome() {
-		return ResponseEntity.ok("Welcome to Cart Service....");
+	public ResponseEntity<ApiResponse> welcome() {
+		return ResponseEntity.ok(new ApiResponse("Welcome to Cart Service....",null));
 	}
 	
 	@Autowired
 	private cartService cartService;
 	
 	@PostMapping
-	public ResponseEntity<String> addCart(@RequestBody Cart cart) {
+	public ResponseEntity<ApiResponse> addCart(@RequestBody Cart cart) {
 		String result = cartService.addCart(cart);
-		return ResponseEntity.ok(result);
+		return ResponseEntity.ok(new ApiResponse(result,null));
 	}
 	
 	@GetMapping("/{cartId}")
-	public ResponseEntity<Cart> getCart(@PathVariable String cartId) {
+	public ResponseEntity<ApiResponse> getCart(@PathVariable String cartId) {
 		Cart cart = cartService.getCart(cartId);
-		return ResponseEntity.ok(cart);
+		return ResponseEntity.ok(new ApiResponse("Cart details retrieved successfully", cart));
 	}
 	
 	@PutMapping
-	public ResponseEntity<String> updateCart(@RequestBody Cart cart) {
+	public ResponseEntity<ApiResponse> updateCart(@RequestBody Cart cart) {
 		String result = cartService.updateCart(cart);
-		return ResponseEntity.ok(result);
+		return ResponseEntity.ok(new ApiResponse(result, null));
 	}
 	
 	@DeleteMapping("/{cartId}")
-	public ResponseEntity<String> deleteCart(@PathVariable String cartId) {
+	public ResponseEntity<ApiResponse> deleteCart(@PathVariable String cartId) {
 		String response = cartService.deleteCart(cartId);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(new ApiResponse(response, null));
+	}
+
+	@GetMapping("/allcarts/{customerUserName}")
+	public ResponseEntity<ApiResponse> getAllCartByCustomerName(@PathVariable String customerUserName) {
+		List<Cart> allCarts = cartService.getCartItemsForUser(customerUserName);
+		return ResponseEntity.ok(new ApiResponse("All Cart details are retrieved successfully", allCarts));
+	}
+
+	@DeleteMapping("/allcarts/{customerUserName}")
+	public ResponseEntity<ApiResponse> deleteAllCartByCustomerName(@PathVariable String customerUserName) {
+		cartService.deleteCartItemsForUser(customerUserName);
+		return ResponseEntity.ok(new ApiResponse("All Cart details are deleted successfully", null));
 	}
 }
