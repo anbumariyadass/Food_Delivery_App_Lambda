@@ -21,7 +21,7 @@ public class RestaurantController {
 
 	@GetMapping("/ping")
 	public ResponseEntity<String> ping(){
-		return ResponseEntity.ok("hello from poc");
+		return ResponseEntity.ok("Hello from Restaurant service...");
 	}
 
 	@GetMapping("/allRestaurants")
