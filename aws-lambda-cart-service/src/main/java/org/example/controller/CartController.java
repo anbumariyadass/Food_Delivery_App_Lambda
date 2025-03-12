@@ -1,12 +1,12 @@
 package org.example.controller;
 
 import org.example.dto.ApiResponse;
+import org.example.entity.Cart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import org.example.entity.Cart;
-import org.example.service.cartService;
+import org.example.service.CartService;
 
 import java.util.List;
 
@@ -14,48 +14,31 @@ import java.util.List;
 @CrossOrigin(origins = "*")  // Allows requests from any origin
 @RequestMapping("/cart")
 public class CartController {
-	
-	@GetMapping
-	public ResponseEntity<ApiResponse> welcome() {
-		return ResponseEntity.ok(new ApiResponse("Welcome to Cart Service....",null));
-	}
-	
 	@Autowired
-	private cartService cartService;
-	
-	@PostMapping
+	private CartService cartService;
+
+	@GetMapping("/init")
+	public ResponseEntity<ApiResponse> welcome() {
+		return ResponseEntity.ok(new ApiResponse("Welcome to Cart Service....", null));
+	}
+
+
+	@PostMapping("/save")
 	public ResponseEntity<ApiResponse> addCart(@RequestBody Cart cart) {
-		String result = cartService.addCart(cart);
-		return ResponseEntity.ok(new ApiResponse(result,null));
-	}
-	
-	@GetMapping("/{cartId}")
-	public ResponseEntity<ApiResponse> getCart(@PathVariable String cartId) {
-		Cart cart = cartService.getCart(cartId);
-		return ResponseEntity.ok(new ApiResponse("Cart details retrieved successfully", cart));
-	}
-	
-	@PutMapping
-	public ResponseEntity<ApiResponse> updateCart(@RequestBody Cart cart) {
-		String result = cartService.updateCart(cart);
-		return ResponseEntity.ok(new ApiResponse(result, null));
-	}
-	
-	@DeleteMapping("/{cartId}")
-	public ResponseEntity<ApiResponse> deleteCart(@PathVariable String cartId) {
-		String response = cartService.deleteCart(cartId);
-		return ResponseEntity.ok(new ApiResponse(response, null));
+		Cart addedCart = cartService.saveCart(cart);
+		return ResponseEntity.ok(new ApiResponse("Cart is saved successfully", addedCart));
 	}
 
-	@GetMapping("/allcarts/{customerUserName}")
-	public ResponseEntity<ApiResponse> getAllCartByCustomerName(@PathVariable String customerUserName) {
-		List<Cart> allCarts = cartService.getCartItemsForUser(customerUserName);
-		return ResponseEntity.ok(new ApiResponse("All Cart details are retrieved successfully", allCarts));
+	@GetMapping("/{userName}")
+	public ResponseEntity<ApiResponse> getCart(@PathVariable String userName) {
+		Cart cart = cartService.getCart(userName);
+		return ResponseEntity.ok(new ApiResponse("Cart is retrieved successfully", cart));
 	}
 
-	@DeleteMapping("/allcarts/{customerUserName}")
-	public ResponseEntity<ApiResponse> deleteAllCartByCustomerName(@PathVariable String customerUserName) {
-		cartService.deleteCartItemsForUser(customerUserName);
-		return ResponseEntity.ok(new ApiResponse("All Cart details are deleted successfully", null));
+
+	@DeleteMapping("/{userName}")
+	public ResponseEntity<ApiResponse> deleteCart(@PathVariable String userName) {
+		cartService.deleteCart(userName);
+		return ResponseEntity.ok(new ApiResponse("Cart is deleted successfully", null));
 	}
 }
