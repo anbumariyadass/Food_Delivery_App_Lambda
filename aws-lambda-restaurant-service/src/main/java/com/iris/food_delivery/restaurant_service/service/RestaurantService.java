@@ -1,14 +1,13 @@
-package org.example.service;
+package com.iris.food_delivery.restaurant_service.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.example.entity.Dish;
-import org.example.entity.Restaurant;
-import org.example.exception.handler.DishNotFoundException;
-import org.example.exception.handler.RestaurantNotFoundException;
-import org.example.repository.DishRepository;
-import org.example.repository.RestaurantRepository;
+import com.iris.food_delivery.restaurant_service.entity.Dish;
+import com.iris.food_delivery.restaurant_service.entity.Restaurant;
+import com.iris.food_delivery.restaurant_service.exception.handler.RestaurantNotFoundException;
+import com.iris.food_delivery.restaurant_service.repository.DishRepository;
+import com.iris.food_delivery.restaurant_service.repository.RestaurantRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -25,34 +24,35 @@ public class RestaurantService {
     private DishRepository dishRepository;
     
     public Restaurant saveRestaurant(Restaurant restaurant) {
-        // Ensure dishes are correctly associated with the restaurant
-        if (restaurant.getDishes() != null) {
-            restaurant.getDishes().forEach(dish -> dish.setRestaurant(restaurant));
-        }
-        return restaurantRepository.save(restaurant);
+    	 if (restaurantRepository.findByUserName(restaurant.getUserName()).isPresent()) {
+    		 throw new RestaurantNotFoundException("Restaurant already found for " + restaurant.getUserName());
+         } else {
+        	// Ensure dishes are correctly associated with the restaurant
+             if (restaurant.getDishes() != null) {
+                 restaurant.getDishes().forEach(dish -> dish.setRestaurant(restaurant));
+             }
+             return restaurantRepository.save(restaurant);
+         }
     }
 
     public List<Restaurant> getAllRestaurants() {
         return restaurantRepository.findAll();
     }
     
-    @Transactional
-    public Dish addDishToRestaurant(Long restaurantId, Dish dish) {
-        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
-        if (restaurantOptional.isPresent()) {
-            Restaurant restaurant = restaurantOptional.get();
-            dish.setRestaurant(restaurant);
-            return dishRepository.save(dish);
+    public Restaurant getRestaurant(String restaurantUserName) {
+    	Optional<Restaurant> existingRestaurantOpt = restaurantRepository.findByUserName(restaurantUserName);
+        
+        if (existingRestaurantOpt.isPresent()) {
+            return existingRestaurantOpt.get();
         } else {
-            throw new RestaurantNotFoundException("Restaurant not found with ID: " + restaurantId);
+            throw new RestaurantNotFoundException("Restaurant not found for " + restaurantUserName);
         }
     }
     
     
-    
     @Transactional
-    public Restaurant updateRestaurant(Long restaurantId, Restaurant updatedRestaurant) {
-        Optional<Restaurant> existingRestaurantOpt = restaurantRepository.findById(restaurantId);
+    public Restaurant updateRestaurant(String restaurantUserName, Restaurant updatedRestaurant) {
+        Optional<Restaurant> existingRestaurantOpt = restaurantRepository.findByUserName(restaurantUserName);
         
         if (existingRestaurantOpt.isPresent()) {
             Restaurant existingRestaurant = existingRestaurantOpt.get();
@@ -97,22 +97,22 @@ public class RestaurantService {
 
             return restaurantRepository.save(existingRestaurant);
         } else {
-            throw new RestaurantNotFoundException("Restaurant not found with ID: " + restaurantId);
+            throw new RestaurantNotFoundException("Restaurant not found for " + restaurantUserName);
         }
     }
     
-    public List<Dish> getDishesByRestaurant(Long restaurantId) {
-        Optional<Restaurant> restaurantOpt = restaurantRepository.findById(restaurantId);
+    public List<Dish> getDishesByRestaurant(String restaurantUserName) {
+        Optional<Restaurant> restaurantOpt = restaurantRepository.findByUserName(restaurantUserName);
         if (restaurantOpt.isPresent()) {
             return restaurantOpt.get().getDishes();
         } else {
-            throw new RestaurantNotFoundException("Restaurant not found with ID: " + restaurantId);
+            throw new RestaurantNotFoundException("Restaurant not found for " + restaurantUserName);
         }
     }
 
     @Transactional
-    public List<Dish> updateDishesForRestaurant(Long restaurantId, List<Dish> updatedDishes) {
-        Optional<Restaurant> restaurantOpt = restaurantRepository.findById(restaurantId);
+    public List<Dish> updateDishesForRestaurant(String restaurantUserName, List<Dish> updatedDishes) {
+        Optional<Restaurant> restaurantOpt = restaurantRepository.findByUserName(restaurantUserName);
 
         if (restaurantOpt.isPresent()) {
             Restaurant restaurant = restaurantOpt.get();
@@ -143,33 +143,23 @@ public class RestaurantService {
             restaurantRepository.save(restaurant);
             return restaurant.getDishes();
         } else {
-            throw new RestaurantNotFoundException("Restaurant not found with ID: " + restaurantId);
+            throw new RestaurantNotFoundException("Restaurant not found for " + restaurantUserName);
         }
     }
     
     @Transactional
-    public void deleteRestaurantById(Long restaurantId) {
-        Optional<Restaurant> restaurantOpt = restaurantRepository.findById(restaurantId);
+    public void deleteRestaurantByUserName(String restaurantUserName) {
+        Optional<Restaurant> restaurantOpt = restaurantRepository.findByUserName(restaurantUserName);
         if (restaurantOpt.isPresent()) {
-            restaurantRepository.deleteById(restaurantId);
+            restaurantRepository.deleteById(restaurantOpt.get().getId());
         } else {
-            throw new RestaurantNotFoundException("Restaurant not found with ID: " + restaurantId);
+            throw new RestaurantNotFoundException("Restaurant not found for " + restaurantUserName);
         }
     }
 
     @Transactional
-    public void deleteDishById(Long dishId) {
-        Optional<Dish> dishOpt = dishRepository.findById(dishId);
-        if (dishOpt.isPresent()) {
-            dishRepository.deleteById(dishId);
-        } else {
-            throw new DishNotFoundException("Dish not found with ID: " + dishId);
-        }
-    }
-    
-    @Transactional
-    public void deleteAllDishesForRestaurant(Long restaurantId) {
-        Optional<Restaurant> restaurantOpt = restaurantRepository.findById(restaurantId);
+    public void deleteAllDishesForRestaurant(String restaurantUserName) {
+        Optional<Restaurant> restaurantOpt = restaurantRepository.findByUserName(restaurantUserName);
         if (restaurantOpt.isPresent()) {
             Restaurant restaurant = restaurantOpt.get();
             
@@ -180,15 +170,11 @@ public class RestaurantService {
             restaurantRepository.save(restaurant);
 
             // Delete all dishes from the database for this restaurant
-            dishRepository.deleteByRestaurantId(restaurantId);
+            dishRepository.deleteByRestaurantId(restaurantOpt.get().getId());
         } else {
-            throw new RestaurantNotFoundException("Restaurant not found with ID: " + restaurantId);
+            throw new RestaurantNotFoundException("Restaurant not found for " + restaurantUserName);
         }
     }
 
-    public Optional<Restaurant> getUserByUserName(String userName) {
-        return restaurantRepository.findByUserName(userName);
-    }
-    
 }
 

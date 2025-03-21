@@ -1,4 +1,4 @@
-package org.example.exception.handler;
+package com.iris.food_delivery.restaurant_service.exception.handler;
 
 public class DishNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 1L;

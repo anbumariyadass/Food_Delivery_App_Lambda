@@ -1,4 +1,4 @@
-package org.example.jwt;
+package com.iris.food_delivery.restaurant_service.jwt;
 
 import java.io.IOException;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.example.entity;
+package com.iris.food_delivery.restaurant_service.entity;
 
 import jakarta.persistence.Embeddable;
 

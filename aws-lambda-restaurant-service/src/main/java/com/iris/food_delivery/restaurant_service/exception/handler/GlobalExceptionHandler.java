@@ -1,4 +1,4 @@
-package org.example.exception.handler;
+package com.iris.food_delivery.restaurant_service.exception.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import org.example.dto.ApiResponse;
+import com.iris.food_delivery.restaurant_service.dto.ApiResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
