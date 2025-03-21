@@ -1,4 +1,4 @@
-package org.example.controller;
+package com.iris.food_delivery.identity_service.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,19 +15,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.example.dto.ApiResponse;
-import org.example.dto.AuthRequest;
-import org.example.dto.UserDTO;
-import org.example.model.User;
-import org.example.service.AuthenticationService;
+import com.iris.food_delivery.identity_service.dto.ApiResponse;
+import com.iris.food_delivery.identity_service.dto.AuthRequest;
+import com.iris.food_delivery.identity_service.dto.UserDTO;
+import com.iris.food_delivery.identity_service.model.User;
+import com.iris.food_delivery.identity_service.service.IdentificationService;
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:3000")
 @CrossOrigin(origins = "*")  // Allows requests from any origin
-@RequestMapping("/auth")
-public class AuthController {
+@RequestMapping("/identity")
+public class IdentityServiceController {
     @Autowired
-    private AuthenticationService authenticationService;
+    private IdentificationService authenticationService;
+    
+    @GetMapping("/ping")
+    public ResponseEntity<ApiResponse> ping() {
+        return ResponseEntity.ok(new ApiResponse("Hello from Identity Service!", null));
+    }
     
     //This method will be removed later once the admin user will be added into the application at realtime.
     @PostMapping("/register/admin")
@@ -37,41 +41,26 @@ public class AuthController {
     	user.setPassword("admin");
     	user.setRole("ADMIN");
     	user.setActive("Y");
-    	try {
-    		UserDTO userDTO = authenticationService.register(user);
-    		return ResponseEntity.ok(new ApiResponse(user.getUsername() + " is created successfully",userDTO));
-    	} catch (Exception e) {
-    		return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new ApiResponse(e.getMessage(), null));
-    	}
+    	UserDTO userDTO = authenticationService.register(user);
+    	return ResponseEntity.ok(new ApiResponse(user.getUsername() + " is created successfully",userDTO));
+    	
     }
     
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> register(@RequestBody User user) {
-    	try {
-    		UserDTO userDTO = authenticationService.register(user);
-    		return ResponseEntity.ok(new ApiResponse(user.getUsername() + " is created successfully",userDTO));
-    	} catch (Exception e) {
-    		return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new ApiResponse(e.getMessage(), null));
-    	}
+    	UserDTO userDTO = authenticationService.register(user);
+    	return ResponseEntity.ok(new ApiResponse(user.getUsername() + " is created successfully",userDTO));
     }
     
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> login(@RequestBody AuthRequest request) {
-        try {
-        	 UserDTO user = authenticationService.authenticate(request.getUsername(), request.getPassword());
-        	 if (user != null && user.getToken() != null) {
-                 return ResponseEntity.ok(new ApiResponse("Login Successful", user));
-             } else {
-                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                         .body(new ApiResponse("Invalid credentials", null));
-             }
-        } catch(Exception e) {
-        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ApiResponse(e.getMessage(), null));
-        }
-       
+    	 UserDTO user = authenticationService.authenticate(request.getUsername(), request.getPassword());
+    	 if (user != null && user.getToken() != null) {
+             return ResponseEntity.ok(new ApiResponse("Login Successful", user));
+         } else {
+             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                     .body(new ApiResponse("Invalid credentials", null));
+         }
     }
 
     
@@ -84,36 +73,19 @@ public class AuthController {
     @GetMapping("/getUserInfo")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse> getUserInfo(@RequestParam String userName) {    
-    	try {
-    		return ResponseEntity.ok(new ApiResponse("Retrieve User Information Success", authenticationService.getUserInfo(userName)));
-    	} catch(Exception e) {
-    		return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new ApiResponse(e.getMessage(), null));
-    	}
-        
+    	return ResponseEntity.ok(new ApiResponse("Retrieve User Information Success", authenticationService.getUserInfo(userName)));
     }
     
     @PutMapping("/updateUser")
     public ResponseEntity<ApiResponse> updateUser(@RequestBody User user) {
-    	try {
-    		return ResponseEntity.ok(new ApiResponse("User updated successfully", authenticationService.updateUser(user)));
-    	} catch(Exception e) {
-    		return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new ApiResponse(e.getMessage(), null));
-    	}
+    	return ResponseEntity.ok(new ApiResponse("User updated successfully", authenticationService.updateUser(user)));
     }
     
     @DeleteMapping("/deleteUser")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse> deleteUser(@RequestParam String userName) {
-    	try {
-    		System.out.println("delete user:: "+userName);
-    		authenticationService.deleteUser(userName);
-    		return ResponseEntity.ok(new ApiResponse("User deleted successfully", null));
-    	} catch(Exception e) {
-    		return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new ApiResponse(e.getMessage(), null));
-    	}
+    	authenticationService.deleteUser(userName);
+    	return ResponseEntity.ok(new ApiResponse("User deleted successfully", null));
     }
     
     @GetMapping("/checkUserAvailable/{userName}")

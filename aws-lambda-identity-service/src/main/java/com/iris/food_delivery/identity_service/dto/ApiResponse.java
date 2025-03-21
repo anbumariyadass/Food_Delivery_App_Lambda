@@ -1,4 +1,4 @@
-package org.example.dto;
+package com.iris.food_delivery.identity_service.dto;
 
 public class ApiResponse {
     private String message;

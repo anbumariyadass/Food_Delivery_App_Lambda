@@ -1,4 +1,4 @@
-package org.example.jwt;
+package com.iris.food_delivery.identity_service.jwt;
 
 
 import java.util.Date;

@@ -1,4 +1,4 @@
-package org.example.model;
+package com.iris.food_delivery.identity_service.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

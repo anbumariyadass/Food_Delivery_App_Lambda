@@ -1,4 +1,4 @@
-package org.example.service;
+package com.iris.food_delivery.identity_service.service;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import org.example.model.User;
-import org.example.repository.UserRepository;
+import com.iris.food_delivery.identity_service.model.User;
+import com.iris.food_delivery.identity_service.repository.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

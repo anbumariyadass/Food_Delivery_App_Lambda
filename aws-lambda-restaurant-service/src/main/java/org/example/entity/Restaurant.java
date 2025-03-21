@@ -13,6 +13,8 @@ public class Restaurant {
     private Long id;
 
     private String name;
+
+	private String userName;
     
     @Embedded
     private Address address;
@@ -114,6 +116,12 @@ public class Restaurant {
 	public void setDishes(List<Dish> dishes) {
 		this.dishes = dishes;
 	}
-    
-    
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 }

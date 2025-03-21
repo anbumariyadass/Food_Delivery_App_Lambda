@@ -185,6 +185,10 @@ public class RestaurantService {
             throw new RestaurantNotFoundException("Restaurant not found with ID: " + restaurantId);
         }
     }
+
+    public Optional<Restaurant> getUserByUserName(String userName) {
+        return restaurantRepository.findByUserName(userName);
+    }
     
 }
 

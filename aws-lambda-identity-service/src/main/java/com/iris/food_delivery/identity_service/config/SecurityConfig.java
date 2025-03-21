@@ -1,4 +1,4 @@
-package org.example.config;
+package com.iris.food_delivery.identity_service.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,8 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import org.example.jwt.JwtFilter;
-import org.example.service.CustomUserDetailsService;
+import com.iris.food_delivery.identity_service.jwt.JwtFilter;
+import com.iris.food_delivery.identity_service.service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
@@ -31,7 +31,7 @@ public class SecurityConfig {
 	        http
 	            .csrf(csrf -> csrf.disable()) // Disable CSRF for REST APIs
 	            .authorizeHttpRequests(auth -> auth
-	                .requestMatchers("/auth/register/**", "/auth/login", "/auth/checkUserAvailable/**", "/ping", "/test").permitAll() // Public endpoints
+	                .requestMatchers("/identity/register/**", "/identity/login", "/identity/checkUserAvailable/**", "/identity/ping").permitAll() // Public endpoints
 	                .anyRequest().authenticated() // All other endpoints require authentication
 	            )
 	            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Ensures no session is stored
