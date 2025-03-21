@@ -31,7 +31,7 @@ public class RestaurantController {
 	
 	//Add Restaurant Info
 	@PostMapping("/add")
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_RESTAURANT')")
 	public ResponseEntity<ApiResponse> addRestaurant(@RequestBody Restaurant restaurant) {
 		Restaurant addedRestaurant = restaurantService.saveRestaurant(restaurant);
 		return ResponseEntity.ok(new ApiResponse("Restaurant added successfully", addedRestaurant));

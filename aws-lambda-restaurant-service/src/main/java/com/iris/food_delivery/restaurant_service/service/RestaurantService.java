@@ -97,7 +97,8 @@ public class RestaurantService {
 
             return restaurantRepository.save(existingRestaurant);
         } else {
-            throw new RestaurantNotFoundException("Restaurant not found for " + restaurantUserName);
+            updatedRestaurant.setUserName(restaurantUserName);
+            return saveRestaurant(updatedRestaurant);
         }
     }
     
