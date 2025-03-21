@@ -1,4 +1,4 @@
-package org.example.config;
+package com.iris.food_delivery.cart_service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,7 @@ public class DynamoDBConfig {
                 .credentialsProvider(DefaultCredentialsProvider.create()) // Uses IAM role assigned to Lambda
                 .build();
     }
-    
+
     @Bean
     DynamoDbEnhancedClient dynamoDbEnhancedClient(DynamoDbClient dynamoDbClient) {
         return DynamoDbEnhancedClient.builder()
@@ -25,4 +25,3 @@ public class DynamoDBConfig {
                 .build();
     }
 }
-

@@ -1,4 +1,4 @@
-package org.example.entity;
+package com.iris.food_delivery.cart_service.entity;
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;

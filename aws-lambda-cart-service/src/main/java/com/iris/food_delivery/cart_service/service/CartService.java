@@ -1,9 +1,9 @@
-package org.example.service;
+package com.iris.food_delivery.cart_service.service;
 
-import org.example.entity.Cart;
+import com.iris.food_delivery.cart_service.entity.Cart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.example.repository.CartRepository;
+import com.iris.food_delivery.cart_service.repository.CartRepository;
 
 @Service
 public class CartService {

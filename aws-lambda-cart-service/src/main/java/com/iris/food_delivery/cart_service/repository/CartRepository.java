@@ -1,6 +1,6 @@
-package org.example.repository;
+package com.iris.food_delivery.cart_service.repository;
 
-import org.example.entity.Cart;
+import com.iris.food_delivery.cart_service.entity.Cart;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
